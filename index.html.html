@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lunéra Skin | Healthy Glowing Skin</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Plus+Jakarta+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        display: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            cream: '#FDFBF7',
+                            pink: '#F4E9E2',
+                            earth: '#9C8C7E',
+                            dark: '#2D2926',
+                            soft: '#6E665F',
+                            white: '#FFFFFF'
+                        }
+                    },
+                    boxShadow: {
+                        'soft': '0 10px 40px -10px rgba(0,0,0,0.04)',
+                        'floating': '0 20px 40px -20px rgba(156,140,126,0.3)',
+                    },
+                    animation: {
+                        'float': 'float 6s ease-in-out infinite',
+                        'fade-in': 'fadeIn 0.5s ease-out forwards',
+                    },
+                    keyframes: {
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0)' },
+                            '50%': { transform: 'translateY(-15px)' },
+                        },
+                        fadeIn: {
+                            '0%': { opacity: '0', transform: 'translateY(10px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            background-color: #FDFBF7;
+            color: #2D2926;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        /* Scroll Reveal Utility */
+        .reveal {
+            opacity: 0;
+            transform: translateY(40px);
+            transition: all 0.9s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .reveal-delay-1 { transition-delay: 0.1s; }
+        .reveal-delay-2 { transition-delay: 0.2s; }
+        .reveal-delay-3 { transition-delay: 0.3s; }
+
+        /* Image hover utilities */
+        .product-card .img-wrapper {
+            overflow: hidden;
+            border-radius: 1.5rem;
+        }
+        
+        .product-card img {
+            transition: transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        
+        .product-card:hover img {
+            transform: scale(1.05);
+        }
+
+        .add-to-cart-btn {
+            opacity: 0;
+            transform: translateY(10px);
+            transition: all 0.4s ease;
+        }
+
+        .product-card:hover .add-to-cart-btn {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Accordion transition */
+        .accordion-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.4s ease-out, padding 0.4s ease-out;
+            opacity: 0;
+        }
+        
+        .accordion-content.open {
+            opacity: 1;
+        }
+
+        /* Toast Notification */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            right: 24px;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: #2D2926;
+            color: #fff;
+            padding: 16px 24px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-family: 'Inter', sans-serif;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform: translateX(120%);
+            opacity: 0;
+            transition: all 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+
+        .toast.show {
+            transform: translateX(0);
+            opacity: 1;
+        }
+    </style>
+</head>
+<body class="font-sans antialiased overflow-x-hidden">
+
+    <nav id="navbar" class="fixed w-full z-50 transition-all duration-400 py-6 px-6 lg:px-12 bg-brand-cream/80 backdrop-blur-md border-b border-transparent">
+        <div class="max-w-7xl mx-auto flex justify-between items-center">
+            
+            <!-- Mobile Menu Icon -->
+            <button class="md:hidden text-brand-dark p-2 -ml-2" aria-label="Menu">
+                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M3.75 9h16.5m-16.5 6.75h16.5" />
+                </svg>
+            </button>
+
+            <!-- Nav Links (Desktop) -->
+            <div class="hidden md:flex space-x-8 items-center text-sm font-medium text-brand-soft">
+                <a href="#products" class="hover:text-brand-dark transition-colors">Shop</a>
+                <a href="#benefits" class="hover:text-brand-dark transition-colors">Benefits</a>
+                <a href="#about" class="hover:text-brand-dark transition-colors">About</a>
+            </div>
+
+            <!-- Logo -->
+            <a href="#" class="font-display text-2xl md:text-3xl font-semibold tracking-tight text-brand-dark absolute left-1/2 transform -translate-x-1/2">
+                LUNÉRA
+            </a>
+
+            <!-- Actions -->
+            <div class="flex space-x-4 md:space-x-6 items-center text-brand-dark">
+                <button aria-label="Search" class="hover:text-brand-earth transition-colors hidden sm:block">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-5.197-5.197m0 0A7.5 7.5 0 105.196 5.196a7.5 7.5 0 0010.607 10.607z" />
+                    </svg>
+                </button>
+                <button aria-label="Cart" class="hover:text-brand-earth transition-colors relative" onclick="showToast('Shopping cart opened.')">
+                    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-5 h-5">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M15.75 10.5V6a3.75 3.75 0 10-7.5 0v4.5m11.356-1.993l1.263 12c.07.665-.45 1.243-1.119 1.243H4.25a1.125 1.125 0 01-1.12-1.243l1.264-12A1.125 1.125 0 015.513 7.5h12.974c.576 0 1.059.435 1.119 1.007zM8.625 10.5a.375.375 0 11-.75 0 .375.375 0 01.75 0zm7.5 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+                    </svg>
+                    <span class="absolute -top-1 -right-1 flex h-3 w-3">
+                      <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-brand-earth opacity-75"></span>
+                      <span class="relative inline-flex rounded-full h-3 w-3 bg-brand-earth"></span>
+                    </span>
+                </button>
+            </div>
+        </div>
+    </nav>
+
+    <header class="relative pt-32 pb-20 lg:pt-40 lg:pb-32 px-6 lg:px-12 overflow-hidden">
+        <!-- Soft background blob -->
+        <div class="absolute top-0 right-0 w-[600px] h-[600px] bg-brand-pink rounded-full mix-blend-multiply filter blur-3xl opacity-50 translate-x-1/3 -translate-y-1/4 z-0"></div>
+        
+        <div class="max-w-7xl mx-auto flex flex-col-reverse lg:flex-row items-center gap-12 lg:gap-20 relative z-10">
+            
+            <!-- Hero Text -->
+            <div class="w-full lg:w-1/2 text-center lg:text-left mt-10 lg:mt-0">
+                <span class="text-brand-earth font-medium tracking-widest uppercase text-xs mb-6 block reveal">Organic Skincare</span>
+                <h1 class="font-display text-5xl md:text-6xl lg:text-7xl font-light text-brand-dark leading-[1.1] mb-6 reveal reveal-delay-1">
+                    Healthy Skin <br> Starts With <br> <span class="font-semibold text-brand-earth italic">Simplicity.</span>
+                </h1>
+                <p class="text-brand-soft text-lg font-light max-w-md mx-auto lg:mx-0 mb-10 reveal reveal-delay-2">
+                    Clean, organic skincare products designed for healthy glowing skin. Formulated with nature's finest ingredients.
+                </p>
+                <div class="flex flex-col sm:flex-row items-center justify-center lg:justify-start gap-4 reveal reveal-delay-3">
+                    <a href="#products" class="w-full sm:w-auto px-8 py-4 bg-brand-dark hover:bg-black text-white rounded-full transition-all duration-300 font-medium text-sm text-center shadow-soft">
+                        Shop Now
+                    </a>
+                    <a href="#about" class="w-full sm:w-auto px-8 py-4 bg-white border border-brand-earth/20 text-brand-dark hover:border-brand-earth rounded-full transition-all duration-300 font-medium text-sm text-center">
+                        Explore Products
+                    </a>
+                </div>
+            </div>
+
+            <!-- Hero Image -->
+            <div class="w-full lg:w-1/2 relative reveal">
+                <div class="relative rounded-[2.5rem] overflow-hidden aspect-[4/5] max-w-md mx-auto shadow-floating animate-float border border-white/50">
+                    <img src="https://res.cloudinary.com/dg8bgyog0/image/upload/v1779203371/pexels-craytive-1502219_y4nvay.jpg" 
+                         alt="Lunera Serum Bottle" 
+                         class="w-full h-full object-cover object-center scale-105" />
+                    <div class="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent"></div>
+                </div>
+                
+                <!-- Floating Element -->
+                <div class="absolute -bottom-6 -left-6 lg:left-0 bg-white/90 backdrop-blur p-4 rounded-2xl shadow-soft flex items-center gap-4 animate-[float_5s_ease-in-out_infinite_reverse]">
+                    <div class="flex -space-x-2">
+                        <div class="w-8 h-8 rounded-full bg-brand-pink border-2 border-white flex items-center justify-center text-[10px]">✨</div>
+                        <div class="w-8 h-8 rounded-full bg-brand-earth border-2 border-white flex items-center justify-center text-[10px] text-white">🌿</div>
+                    </div>
+                    <div>
+                        <p class="text-xs font-semibold text-brand-dark">100% Organic</p>
+                        <p class="text-[10px] text-brand-soft">Cruelty-free</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <section id="products" class="py-24 px-6 lg:px-12 bg-white relative z-20">
+        <div class="max-w-7xl mx-auto">
+            <div class="flex flex-col md:flex-row justify-between items-end mb-16 reveal">
+                <div class="max-w-xl">
+                    <h2 class="font-display text-3xl md:text-4xl font-semibold text-brand-dark mb-4">Daily Essentials</h2>
+                    <p class="text-brand-soft font-light">Curated formulations for your morning and evening rituals.</p>
+                </div>
+                <a href="#" class="hidden md:inline-flex items-center text-brand-earth hover:text-brand-dark transition-colors font-medium text-sm group mt-6 md:mt-0 pb-1 border-b border-brand-earth/30 hover:border-brand-dark">
+                    Shop All Products
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-2 transform group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+                    </svg>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 gap-y-12">
+                
+                <!-- Product 1 -->
+                <div class="product-card group cursor-pointer reveal">
+                    <div class="relative img-wrapper aspect-[4/5] bg-brand-cream mb-6">
+                        <img src="https://res.cloudinary.com/dg8bgyog0/image/upload/v1779203376/pexels-roman-odintsov-7691112_g0t7ic.jpg" alt="Luminous Face Oil" class="w-full h-full object-cover" />
+                        <!-- Add to cart overlay -->
+                        <div class="absolute inset-x-4 bottom-4 add-to-cart-btn">
+                            <button onclick="addToCart('Luminous Face Oil', '$48')" class="w-full bg-white/95 backdrop-blur text-brand-dark py-3 rounded-xl font-medium text-sm hover:bg-brand-dark hover:text-white transition-colors shadow-soft">
+                                Add to Cart — $48
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="flex justify-center items-center gap-1 mb-2">
+                            <svg class="w-3 h-3 text-brand-earth fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <span class="text-xs text-brand-soft">4.9 (128)</span>
+                        </div>
+                        <h3 class="font-display text-lg font-medium text-brand-dark mb-1">Luminous Face Oil</h3>
+                        <p class="text-brand-soft text-sm">Deep hydration & glow</p>
+                    </div>
+                </div>
+
+                <!-- Product 2 -->
+                <div class="product-card group cursor-pointer reveal reveal-delay-1">
+                    <div class="relative img-wrapper aspect-[4/5] bg-brand-cream mb-6">
+                        <img src="https://res.cloudinary.com/dg8bgyog0/image/upload/v1779203366/pexels-deepa-nishad-1620501673-27544683_whj2y2.jpg" alt="Botanical Cleanser" class="w-full h-full object-cover" />
+                        <div class="absolute top-4 left-4 bg-white px-3 py-1 rounded-full text-[10px] font-semibold tracking-wider uppercase text-brand-dark shadow-sm">Bestseller</div>
+                        <div class="absolute inset-x-4 bottom-4 add-to-cart-btn">
+                            <button onclick="addToCart('Botanical Cleanser', '$32')" class="w-full bg-white/95 backdrop-blur text-brand-dark py-3 rounded-xl font-medium text-sm hover:bg-brand-dark hover:text-white transition-colors shadow-soft">
+                                Add to Cart — $32
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="flex justify-center items-center gap-1 mb-2">
+                            <svg class="w-3 h-3 text-brand-earth fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <span class="text-xs text-brand-soft">5.0 (342)</span>
+                        </div>
+                        <h3 class="font-display text-lg font-medium text-brand-dark mb-1">Botanical Cleanser</h3>
+                        <p class="text-brand-soft text-sm">Gentle purifying gel</p>
+                    </div>
+                </div>
+
+                <!-- Product 3 -->
+                <div class="product-card group cursor-pointer reveal reveal-delay-2">
+                    <div class="relative img-wrapper aspect-[4/5] bg-brand-cream mb-6">
+                        <img src="https://res.cloudinary.com/dg8bgyog0/image/upload/v1779203371/pexels-vie-studio-6167400_xbkyod.jpg" alt="Reviving Eye Cream" class="w-full h-full object-cover" />
+                        <div class="absolute inset-x-4 bottom-4 add-to-cart-btn">
+                            <button onclick="addToCart('Reviving Eye Cream', '$42')" class="w-full bg-white/95 backdrop-blur text-brand-dark py-3 rounded-xl font-medium text-sm hover:bg-brand-dark hover:text-white transition-colors shadow-soft">
+                                Add to Cart — $42
+                            </button>
+                        </div>
+                    </div>
+                    <div class="text-center">
+                        <div class="flex justify-center items-center gap-1 mb-2">
+                            <svg class="w-3 h-3 text-brand-earth fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                            <span class="text-xs text-brand-soft">4.8 (89)</span>
+                        </div>
+                        <h3 class="font-display text-lg font-medium text-brand-dark mb-1">Reviving Eye Cream</h3>
+                        <p class="text-brand-soft text-sm">Brightens & de-puffs</p>
+                    </div>
+                </div>
+
+            </div>
+            
+            <div class="mt-12 text-center md:hidden">
+                 <a href="#" class="inline-flex items-center text-brand-earth hover:text-brand-dark transition-colors font-medium text-sm pb-1 border-b border-brand-earth/30">
+                    Shop All Products
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <section id="benefits" class="py-20 bg-brand-pink/30 border-y border-brand-earth/10">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+                
+                <div class="reveal">
+                    <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-sm text-brand-earth">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M15.362 5.214A8.252 8.252 0 0 1 12 21 8.25 8.25 0 0 1 6.038 7.047 8.287 8.287 0 0 0 9 9.601a8.983 8.983 0 0 1 3.361-6.866 8.21 8.21 0 0 0 3 2.48Z" /><path stroke-linecap="round" stroke-linejoin="round" d="M12 18a3.75 3.75 0 0 0 .495-7.468 5.99 5.99 0 0 0-1.925 3.547 5.975 5.975 0 0 1-2.133-1.001A3.75 3.75 0 0 0 12 18Z" /></svg>
+                    </div>
+                    <h3 class="font-display text-lg font-semibold text-brand-dark mb-2">Organic Ingredients</h3>
+                    <p class="text-brand-soft text-sm max-w-xs mx-auto font-light">Sourced ethically from nature to ensure the highest purity and potency for your skin.</p>
+                </div>
+
+                <div class="reveal reveal-delay-1">
+                    <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-sm text-brand-earth">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12.75 11.25 15 15 9.75M21 12c0 1.268-.63 2.39-1.593 3.068a3.745 3.745 0 0 1-1.043 3.296 3.745 3.745 0 0 1-3.296 1.043A3.745 3.745 0 0 1 12 21c-1.268 0-2.39-.63-3.068-1.593a3.746 3.746 0 0 1-3.296-1.043 3.745 3.745 0 0 1-1.043-3.296A3.745 3.745 0 0 1 3 12c0-1.268.63-2.39 1.593-3.068a3.745 3.745 0 0 1 1.043-3.296 3.746 3.746 0 0 1 3.296-1.043A3.746 3.746 0 0 1 12 3c1.268 0 2.39.63 3.068 1.593a3.746 3.746 0 0 1 3.296 1.043 3.746 3.746 0 0 1 1.043 3.296A3.745 3.745 0 0 1 21 12Z" /></svg>
+                    </div>
+                    <h3 class="font-display text-lg font-semibold text-brand-dark mb-2">Dermatologist Approved</h3>
+                    <p class="text-brand-soft text-sm max-w-xs mx-auto font-light">Clinically tested formulas proven to be safe and effective for daily use.</p>
+                </div>
+
+                <div class="reveal reveal-delay-2">
+                    <div class="w-16 h-16 mx-auto bg-white rounded-full flex items-center justify-center mb-6 shadow-sm text-brand-earth">
+                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-7 h-7"><path stroke-linecap="round" stroke-linejoin="round" d="M21 8.25c0-2.485-2.099-4.5-4.688-4.5-1.935 0-3.597 1.126-4.312 2.733-.715-1.607-2.377-2.733-4.313-2.733C5.1 3.75 3 5.765 3 8.25c0 7.22 9 12 9 12s9-4.78 9-12Z" /></svg>
+                    </div>
+                    <h3 class="font-display text-lg font-semibold text-brand-dark mb-2">Sensitive Skin Friendly</h3>
+                    <p class="text-brand-soft text-sm max-w-xs mx-auto font-light">Free from harsh chemicals, synthetic fragrances, and artificial dyes.</p>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section id="about" class="py-24 md:py-32 px-6 lg:px-12 bg-white">
+        <div class="max-w-7xl mx-auto flex flex-col lg:flex-row items-center gap-16">
+            
+            <div class="w-full lg:w-1/2 reveal">
+                <div class="relative rounded-3xl overflow-hidden aspect-square md:aspect-[4/3] lg:aspect-[4/5]">
+                    <img src="https://res.cloudinary.com/dg8bgyog0/image/upload/v1779203367/pexels-sora-shimazaki-5938255_rbqjih.jpg" alt="Glowing Skin Lifestyle" class="w-full h-full object-cover" />
+                </div>
+            </div>
+
+            <div class="w-full lg:w-1/2 lg:pl-10">
+                <span class="text-brand-earth font-medium tracking-widest uppercase text-xs mb-4 block reveal">The Science of Glow</span>
+                <h2 class="font-display text-4xl md:text-5xl font-light text-brand-dark mb-6 leading-tight reveal reveal-delay-1">Redefining Your <br> Skincare Routine</h2>
+                
+                <div class="space-y-6 text-brand-soft font-light text-lg mb-10 reveal reveal-delay-2">
+                    <p>
+                        We believe that achieving a radiant complexion shouldn't require a complicated 10-step routine. Lunéra Skin focuses on minimalist, highly effective formulations that respect your skin's natural barrier.
+                    </p>
+                    <p>
+                        By combining time-tested botanical extracts with modern clinical science, we create products that deliver visible results while keeping your skin calm, balanced, and deeply nourished.
+                    </p>
+                </div>
+
+                <div class="grid grid-cols-2 gap-8 mb-10 reveal reveal-delay-3 border-y border-brand-earth/10 py-6">
+                    <div>
+                        <h4 class="font-display text-3xl font-semibold text-brand-dark mb-1">98%</h4>
+                        <p class="text-sm text-brand-soft">Saw improved hydration</p>
+                    </div>
+                    <div>
+                        <h4 class="font-display text-3xl font-semibold text-brand-dark mb-1">92%</h4>
+                        <p class="text-sm text-brand-soft">Reported brighter skin</p>
+                    </div>
+                </div>
+
+                <a href="#products" class="inline-block border-b border-brand-dark pb-1 text-brand-dark font-medium hover:text-brand-earth hover:border-brand-earth transition-colors reveal reveal-delay-3">
+                    Discover Our Ingredients
+                </a>
+            </div>
+
+        </div>
+    </section>
+
+    <section class="py-24 bg-brand-cream overflow-hidden">
+        <div class="max-w-7xl mx-auto px-6 lg:px-12">
+            <div class="text-center mb-16 reveal">
+                <h2 class="font-display text-3xl md:text-4xl font-semibold text-brand-dark mb-4">Real Results</h2>
+                <p class="text-brand-soft font-light">Loved by thousands of women worldwide.</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <!-- Testimonial 1 -->
+                <div class="bg-white p-8 rounded-3xl shadow-soft reveal">
+                    <div class="flex text-brand-earth mb-4">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                    <p class="text-brand-dark font-light mb-6">"I've struggled with dull skin for years. The Luminous Face Oil changed everything in just two weeks. It feels luxurious and absorbs instantly."</p>
+                    <p class="font-medium text-sm text-brand-dark">— Sarah J.</p>
+                </div>
+
+                <!-- Testimonial 2 -->
+                <div class="bg-white p-8 rounded-3xl shadow-soft reveal reveal-delay-1">
+                    <div class="flex text-brand-earth mb-4">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                    <p class="text-brand-dark font-light mb-6">"Finally, a brand that understands sensitive skin. The cleanser removes makeup without stripping my face. New holy grail!"</p>
+                    <p class="font-medium text-sm text-brand-dark">— Emily R.</p>
+                </div>
+
+                <!-- Testimonial 3 -->
+                <div class="bg-white p-8 rounded-3xl shadow-soft reveal reveal-delay-2">
+                    <div class="flex text-brand-earth mb-4">
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                        <svg class="w-4 h-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                    </div>
+                    <p class="text-brand-dark font-light mb-6">"Beautiful packaging, minimal ingredients, and it actually works. My skin has never looked so clear and plump. I'm obsessed."</p>
+                    <p class="font-medium text-sm text-brand-dark">— Chloe T.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 px-6 lg:px-12 bg-white">
+        <div class="max-w-3xl mx-auto">
+            <h2 class="font-display text-3xl md:text-4xl font-semibold text-brand-dark mb-12 text-center reveal">Frequently Asked Questions</h2>
+            
+            <div class="space-y-4 reveal reveal-delay-1">
+                
+                <!-- FAQ Item 1 -->
+                <div class="border-b border-brand-earth/20 pb-4">
+                    <button class="flex justify-between items-center w-full text-left py-2 group" onclick="toggleAccordion(this)">
+                        <span class="font-medium text-brand-dark group-hover:text-brand-earth transition-colors">Are your products suitable for sensitive skin?</span>
+                        <svg class="w-5 h-5 text-brand-soft transform transition-transform duration-300 icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-brand-soft font-light pt-2 pb-4 text-sm">Absolutely. We formulate without harsh chemicals, synthetic fragrances, and known irritants, making our entire line ideal for sensitive and reactive skin types.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 2 -->
+                <div class="border-b border-brand-earth/20 pb-4">
+                    <button class="flex justify-between items-center w-full text-left py-2 group" onclick="toggleAccordion(this)">
+                        <span class="font-medium text-brand-dark group-hover:text-brand-earth transition-colors">Is Lunéra cruelty-free and vegan?</span>
+                        <svg class="w-5 h-5 text-brand-soft transform transition-transform duration-300 icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-brand-soft font-light pt-2 pb-4 text-sm">Yes, we are proudly 100% cruelty-free and vegan. We never test on animals and do not use any animal-derived ingredients.</p>
+                    </div>
+                </div>
+
+                <!-- FAQ Item 3 -->
+                <div class="border-b border-brand-earth/20 pb-4">
+                    <button class="flex justify-between items-center w-full text-left py-2 group" onclick="toggleAccordion(this)">
+                        <span class="font-medium text-brand-dark group-hover:text-brand-earth transition-colors">How long will it take to see results?</span>
+                        <svg class="w-5 h-5 text-brand-soft transform transition-transform duration-300 icon" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                    </button>
+                    <div class="accordion-content">
+                        <p class="text-brand-soft font-light pt-2 pb-4 text-sm">While immediate hydration and glow are visible after first use, significant improvements in skin barrier health and texture typically occur within 2 to 4 weeks of consistent use.</p>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+    </section>
+
+    <section class="py-24 bg-brand-dark text-white text-center px-6">
+        <div class="max-w-2xl mx-auto reveal">
+            <h2 class="font-display text-3xl md:text-4xl font-light mb-4">Join the Lunéra Community</h2>
+            <p class="text-white/70 font-light mb-10">Subscribe for skincare tips, exclusive offers, and early access to new launches.</p>
+            
+            <form class="flex flex-col sm:flex-row gap-3 max-w-md mx-auto" onsubmit="event.preventDefault(); showToast('Subscribed successfully. Welcome!'); this.reset();">
+                <input type="email" placeholder="Your email address" required class="flex-1 bg-white/10 border border-white/20 rounded-full px-6 py-4 focus:outline-none focus:border-brand-pink transition-colors text-white placeholder:text-white/50 text-sm">
+                <button type="submit" class="bg-brand-pink text-brand-dark hover:bg-white font-medium rounded-full px-8 py-4 transition-colors text-sm shadow-lg">
+                    Subscribe
+                </button>
+            </form>
+        </div>
+    </section>
+
+    <footer class="bg-brand-cream border-t border-brand-earth/10 pt-20 pb-10 px-6 lg:px-12">
+        <div class="max-w-7xl mx-auto">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-16">
+                
+                <div class="md:col-span-1">
+                    <a href="#" class="font-display text-2xl font-semibold tracking-tight text-brand-dark mb-4 block">LUNÉRA</a>
+                    <p class="text-brand-soft font-light text-sm max-w-xs">Healthy skin starts with simplicity. Clean, minimalist skincare for your everyday glow.</p>
+                </div>
+
+                <div>
+                    <h4 class="font-medium text-brand-dark mb-4">Shop</h4>
+                    <ul class="space-y-3 text-sm text-brand-soft font-light">
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">All Products</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Cleansers</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Serums & Oils</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Moisturizers</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-medium text-brand-dark mb-4">About</h4>
+                    <ul class="space-y-3 text-sm text-brand-soft font-light">
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Our Story</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Ingredients</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Sustainability</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Journal</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="font-medium text-brand-dark mb-4">Help</h4>
+                    <ul class="space-y-3 text-sm text-brand-soft font-light">
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">FAQ</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Shipping & Returns</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Contact Us</a></li>
+                        <li><a href="#" class="hover:text-brand-earth transition-colors">Track Order</a></li>
+                    </ul>
+                </div>
+
+            </div>
+            
+            <div class="border-t border-brand-earth/10 pt-8 flex flex-col md:flex-row justify-between items-center text-xs text-brand-soft font-light">
+                <p>&copy; 2026 Lunéra Skin. All rights reserved.</p>
+                <div class="flex space-x-6 mt-4 md:mt-0">
+                    <a href="#" class="hover:text-brand-dark transition-colors">Privacy Policy</a>
+                    <a href="#" class="hover:text-brand-dark transition-colors">Terms of Service</a>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Toast Notification Container -->
+    <div id="toast-container"></div>
+
+    <script>
+        // Navbar scroll effect
+        const navbar = document.getElementById('navbar');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('shadow-soft');
+                navbar.classList.remove('border-transparent');
+                navbar.classList.add('border-brand-earth/10');
+            } else {
+                navbar.classList.remove('shadow-soft');
+                navbar.classList.add('border-transparent');
+                navbar.classList.remove('border-brand-earth/10');
+            }
+        });
+
+        // Intersection Observer for scroll animations
+        const revealElements = document.querySelectorAll('.reveal');
+        const revealOptions = {
+            threshold: 0.1,
+            rootMargin: "0px 0px -50px 0px"
+        };
+
+        const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+            entries.forEach(entry => {
+                if (!entry.isIntersecting) return;
+                entry.target.classList.add('active');
+                observer.unobserve(entry.target);
+            });
+        }, revealOptions);
+
+        revealElements.forEach(el => revealOnScroll.observe(el));
+
+        // Accordion functionality
+        function toggleAccordion(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.icon');
+            const isOpen = content.classList.contains('open');
+
+            // Close all
+            document.querySelectorAll('.accordion-content').forEach(el => {
+                el.style.maxHeight = null;
+                el.classList.remove('open');
+            });
+            document.querySelectorAll('.icon').forEach(el => {
+                el.style.transform = 'rotate(0deg)';
+            });
+
+            // Open clicked if it wasn't open
+            if (!isOpen) {
+                content.classList.add('open');
+                content.style.maxHeight = content.scrollHeight + "px";
+                icon.style.transform = 'rotate(180deg)';
+            }
+        }
+
+        // Custom Toast Notification System (replaces alert)
+        function showToast(message) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.innerText = message;
+            
+            container.appendChild(toast);
+            
+            // Trigger reflow to ensure transition happens
+            toast.offsetHeight; 
+            
+            toast.classList.add('show');
+            
+            setTimeout(() => {
+                toast.classList.remove('show');
+                setTimeout(() => {
+                    toast.remove();
+                }, 400); // Wait for transition to finish
+            }, 3000);
+        }
+
+        // Mock add to cart function
+        function addToCart(productName, price) {
+            // Prevent default just in case it's in a form/link context
+            if(event) event.preventDefault();
+            if(event) event.stopPropagation(); // Prevent product card click if implemented
+            
+            showToast(`Added ${productName} (${price}) to cart`);
+        }
+    </script>
+</body>
+</html>
